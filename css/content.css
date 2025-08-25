@@ -1,0 +1,5 @@
+/* Content Script Styles */
+@import url('./common.css');
+
+/* Content script specific styles can be added here */
+/* Currently minimal as most styling is handled by JavaScript */

@@ -1,0 +1,356 @@
+/* JSON Formatter Page Styles */
+@import url('./common.css');
+
+body {
+    background: #f5f5f5;
+    overflow-x: hidden;
+}
+
+/* Fixed Input Window */
+.input-window {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    width: 360px;
+    background: var(--bg-primary);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px var(--shadow-light);
+    z-index: 1000;
+    border: 1px solid var(--border-light);
+}
+
+.window-header {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #764ba2 100%);
+    color: white;
+    padding: 15px 20px;
+    border-radius: 12px 12px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.window-header h3 {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.window-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.window-content {
+    padding: 20px;
+}
+
+#jsonInput {
+    width: 100%;
+    min-height: 465px;
+    padding: 12px;
+    border: 2px solid var(--border-light);
+    border-radius: 8px;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    resize: vertical;
+    transition: border-color 0.3s ease;
+}
+
+#jsonInput:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+/* Main Content Area */
+.main-content {
+    margin-right: 390px;
+    padding: 10px;
+    min-height: 100vh;
+}
+
+/* Message Area */
+.message-area {
+    min-height: 0;
+    transition: all 0.3s ease;
+}
+
+.message-area:empty {
+    margin-bottom: 0;
+}
+
+.content-header {
+    background: var(--bg-primary);
+    padding: 15px 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px var(--shadow-light);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.view-controls {
+    display: flex;
+    gap: 8px;
+}
+
+/* JSON Output Area */
+.json-output {
+    background: var(--bg-primary);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px var(--shadow-light);
+    min-height: 500px;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    overflow-x: auto;
+}
+
+.placeholder {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 60px 20px;
+}
+
+.placeholder span {
+    font-size: 4rem;
+    display: block;
+    margin-bottom: 20px;
+}
+
+.placeholder p {
+    font-size: 16px;
+    margin: 0;
+}
+
+/* JSON Styling */
+.json-key {
+    color: var(--json-key);
+    font-weight: 600;
+}
+
+.json-string {
+    color: var(--json-string);
+}
+
+.json-number {
+    color: var(--json-number);
+}
+
+.json-boolean {
+    color: var(--json-boolean);
+}
+
+.json-null {
+    color: var(--json-null);
+}
+
+.json-bracket {
+    color: var(--json-bracket);
+    font-weight: 600;
+}
+
+.json-comma {
+    color: var(--json-comma);
+}
+
+/* Collapsible JSON */
+.json-item {
+    margin: 2px 0;
+}
+
+.json-toggle {
+    cursor: pointer;
+    user-select: none;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    text-align: center;
+    line-height: 16px;
+    margin-right: 8px;
+    border-radius: 3px;
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    font-size: 12px;
+    transition: all 0.2s ease;
+}
+
+.json-toggle:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.json-toggle.expanded::before {
+    content: "▼";
+}
+
+.json-toggle.collapsed::before {
+    content: "▶";
+}
+
+.json-content {
+    margin-left: 24px;
+    transition: all 0.3s ease;
+}
+
+.json-content.collapsed {
+    display: none;
+}
+
+.json-content.expanded {
+    display: block;
+}
+
+/* Icon Buttons */
+/* Icon button styles are now imported from common.css */
+
+/* Button styles are now imported from common.css */
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .input-window {
+        width: 360px;
+        min-height: 585px;
+    }
+    
+    .main-content {
+        margin-right: 370px;
+    }
+}
+
+@media (max-width: 768px) {
+    .input-window {
+        position: relative;
+        top: auto;
+        right: auto;
+        width: 100%;
+        margin-bottom: 20px;
+        min-height: 585px;
+    }
+    
+    .main-content {
+        margin-right: 0;
+        padding: 10px;
+        margin-right: 370px;
+        width: 100%;
+    }
+    
+    .content-header {
+        padding: 12px 15px;
+    }
+    
+    .view-controls {
+        gap: 6px;
+    }
+    
+    .btn-icon {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+
+@media (max-width: 395px) {
+    .input-window {
+        height: 200px;
+        min-height: 200px;
+    }
+    #jsonInput {
+        min-height: 0px;
+        height: 100px;
+    }
+}
+
+/* Animation for JSON loading */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.json-output.loaded {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Syntax highlighting for different data types */
+.json-array {
+    color: #495057;
+}
+
+.json-object {
+    color: #495057;
+}
+
+/* Indentation guides */
+.json-indent {
+    display: inline-block;
+    width: 20px;
+}
+
+/* Message styling */
+.message {
+    font-weight: 500;
+    margin: 0;
+    animation: slideDown 0.3s ease-out;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.message::before {
+    font-size: 16px;
+}
+
+.message.success {
+    color: var(--success-color);
+}
+
+.message.success::before {
+    content: "✅";
+}
+
+.message.error {
+    color: var(--danger-color);
+}
+
+.message.error::before {
+    content: "❌";
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Legacy styles for backward compatibility */
+.json-error {
+    color: var(--danger-color);
+    background: #f8d7da;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid var(--danger-color);
+    margin: 10px 0;
+}
+
+.json-success {
+    color: var(--success-color);
+    background: #d4edda;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid var(--success-color);
+    margin: 10px 0;
+}

@@ -1,0 +1,272 @@
+@import url('./common.css');
+
+body {
+    background: var(--bg-secondary);
+    min-height: 100vh;
+}
+
+.container {
+    width: 420px;
+    max-height: 500px;
+    overflow-y: auto;
+    background: var(--bg-primary);
+    border-radius: 8px;
+    box-shadow: 0 4px 20px var(--shadow-light);
+}
+
+/* Tab Navigation */
+.tab-nav {
+    display: flex;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-light);
+    border-radius: 8px 8px 0 0;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 12px 8px;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    border-bottom: 2px solid transparent;
+    height: 48px;
+    line-height: 1;
+}
+
+.tab-btn:hover {
+    color: var(--text-primary);
+    background: var(--bg-tertiary);
+}
+
+.tab-btn.active {
+    color: var(--success-color);
+    border-bottom-color: var(--success-color);
+    background: var(--bg-primary);
+}
+
+.tab-btn span {
+    font-size: 16px;
+    line-height: 1;
+}
+
+/* Tab Content */
+.tab-content {
+    padding: 16px;
+}
+
+.tab-panel {
+    display: none;
+}
+
+.tab-panel.active {
+    display: block;
+}
+
+.menu-section h2 {
+    font-size: 15px;
+    margin-bottom: 10px;
+    color: var(--text-primary);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.screenshot-controls {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+}
+
+/* Time Converter Styles */
+.time-converter {
+    padding: 0;
+}
+
+.converter-section {
+    margin-bottom: 20px;
+    padding: 16px;
+    background: var(--bg-secondary);
+    border-radius: 6px;
+    border-left: 3px solid var(--success-color);
+}
+
+.converter-section h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 12px 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.converter-section h3::before {
+    content: "⏰";
+    font-size: 16px;
+}
+
+.input-group {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.input-group input {
+    flex: 1;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: var(--success-color);
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.1);
+}
+
+.result-display {
+    padding: 8px 12px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-light);
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    color: var(--text-primary);
+    min-height: 20px;
+    word-break: break-all;
+}
+
+.result-display:empty {
+    display: none;
+}
+
+.current-time {
+    text-align: center;
+}
+
+.time-display {
+    font-size: 12px;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    padding: 8px;
+    background: var(--bg-primary);
+    border-radius: 4px;
+    border: 1px solid var(--border-light);
+}
+
+/* Tool Sections */
+.time-tools, .json-tools {
+    text-align: center;
+    padding: 20px 0;
+}
+
+.tool-description {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin: 12px 0 0 0;
+    font-style: italic;
+}
+
+.tool-links {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 0;
+}
+
+/* Button styles are now imported from common.css */
+
+.screenshot-preview {
+    border: 1px dashed var(--border-medium);
+    border-radius: 4px;
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-muted);
+    color: var(--text-secondary);
+    font-size: 12px;
+    transition: all 0.2s ease;
+}
+
+.screenshot-preview:hover {
+    border-color: var(--success-color);
+    background: #f0fdf4;
+}
+
+.screenshot-preview .placeholder {
+    text-align: center;
+}
+
+.screenshot-preview .placeholder span {
+    font-size: 1.5rem;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.screenshot-preview .placeholder p {
+    margin: 0;
+    font-size: 11px;
+}
+
+.screenshot-preview img {
+    max-width: 100%;
+    max-height: 120px;
+    border-radius: 4px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.screenshot-preview img:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px var(--shadow-medium);
+}
+
+/* Scrollbar styling is now imported from common.css */
+
+/* Responsive design */
+@media (max-width: 450px) {
+    .container {
+        width: 100%;
+        border-radius: 0;
+    }
+    
+    header {
+        border-radius: 0;
+    }
+    
+    .input-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .input-row label {
+        min-width: auto;
+    }
+}
+
+/* 截图状态下的鼠标样式 */
+.screenshot-preview.capture-mode {
+    cursor: crosshair;
+    border-color: var(--primary-color);
+    background: var(--primary-light);
+    color: var(--primary-color);
+}
+
+.screenshot-preview.capture-mode .placeholder {
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+}

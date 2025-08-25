@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOBE Tools</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/popup.css">
+</head>
+<body>
+    <div class="container" style="width: 380px;">
+        <!-- Tab Navigation -->
+        <div class="tab-nav">
+            <button class="tab-btn active" data-tab="screenshot">
+                <span>📸</span>
+                Screenshot
+            </button>
+            <button class="tab-btn" data-tab="time">
+                <span>⏰</span>
+                Timestamp
+            </button>
+            <button class="tab-btn" data-tab="json">
+                <span>📄</span>
+                JSON Formatter
+            </button>
+        </div>
+        
+        <!-- Tab Content -->
+        <div class="tab-content">
+            <!-- Screenshot Tab -->
+            <div id="screenshot-tab" class="tab-panel active">
+                <div class="screenshot-controls">
+                    <button id="captureVisible" class="btn btn-primary">Visible Tab</button>
+                    <button id="captureSelection" class="btn btn-secondary">Select Area</button>
+                </div>
+                <div id="screenshotPreview" class="screenshot-preview">
+                    <div class="placeholder">
+                        <span>📸</span>
+                        <p>Click to capture</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Time Tab -->
+            <div id="time-tab" class="tab-panel">
+                <div class="time-converter">
+                        <h3>Timestamp to Date</h3>
+                        <div class="input-group">
+                            <input type="text" id="timestampInput" placeholder="Enter timestamp (seconds or milliseconds)" />
+                            <button id="convertToDate" class="btn btn-primary">Convert</button>
+                        </div>
+                        <div id="dateResult" class="result-display"></div>
+                    
+                    
+                        <h3>Date to Timestamp</h3>
+                        <div class="input-group">
+                            <input type="datetime-local" id="dateInput" />
+                            <button id="convertToTimestamp" class="btn btn-success">Convert</button>
+                        </div>
+                        <div id="timestampResult" class="result-display"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="../js/popup.js"></script>
+</body>
+</html>

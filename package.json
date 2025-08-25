@@ -1,0 +1,34 @@
+{
+  "name": "tobe-chrome-extension",
+  "version": "1.0.0",
+  "description": "A Chrome extension for improving daily work efficiency with JSON formatter, screenshot tool, and timestamp conversion",
+  "main": "manifest.json",
+  "scripts": {
+    "build": "echo 'No build process required for Chrome extension'",
+    "test": "echo 'No tests specified'",
+    "lint": "echo 'No linter configured'"
+  },
+  "keywords": [
+    "chrome-extension",
+    "json-formatter",
+    "screenshot",
+    "timestamp-converter",
+    "productivity",
+    "tools"
+  ],
+  "author": "TOBE Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/tobe-chrome-extension.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/tobe-chrome-extension/issues"
+  },
+  "homepage": "https://github.com/your-username/tobe-chrome-extension#readme",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "devDependencies": {},
+  "dependencies": {}
+}
