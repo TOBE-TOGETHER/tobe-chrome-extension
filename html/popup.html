@@ -31,12 +31,13 @@
             <div id="screenshot-tab" class="tab-panel active">
                 <div class="screenshot-controls">
                     <button id="captureVisible" class="btn btn-primary">Visible Tab</button>
+                    <button id="captureFullPage" class="btn btn-secondary">Full Page</button>
                     <button id="captureSelection" class="btn btn-secondary">Select Area</button>
                 </div>
-                <div id="screenshotPreview" class="screenshot-preview">
+                <div id="screenshotPreview" class="screenshot-preview" style="display: none;">
                     <div class="placeholder">
                         <span>📸</span>
-                        <p>Click to capture</p>
+                        <p>Screenshot Preview</p>
                     </div>
                 </div>
             </div>
@@ -63,6 +64,8 @@
             </div>
         </div>
     </div>
+    <script src="../js/screenshot.js"></script>
+    <script src="../js/timestamp.js"></script>
     <script src="../js/popup.js"></script>
 </body>
 </html>

@@ -88,7 +88,7 @@ body {
     flex-wrap: wrap;
 }
 
-/* Time Converter Styles */
+/* Timestamp Tab Styles */
 .time-converter {
     padding: 0;
 }
@@ -113,7 +113,6 @@ body {
 
 .converter-section h3::before {
     content: "⏰";
-    font-size: 16px;
 }
 
 .input-group {
@@ -253,20 +252,4 @@ body {
     }
 }
 
-/* 截图状态下的鼠标样式 */
-.screenshot-preview.capture-mode {
-    cursor: crosshair;
-    border-color: var(--primary-color);
-    background: var(--primary-light);
-    color: var(--primary-color);
-}
-
-.screenshot-preview.capture-mode .placeholder {
-    animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-    0% { opacity: 1; }
-    50% { opacity: 0.7; }
-    100% { opacity: 1; }
-}
+/* Note: Removed capture-mode styles as preview area is now purely for display */

@@ -1,5 +1,21 @@
 /* Content Script Styles */
-@import url('./common.css');
+/* Note: @import may not work in content scripts, so defining styles directly */
 
-/* Content script specific styles can be added here */
-/* Currently minimal as most styling is handled by JavaScript */
+/* Screenshot selection mode styles */
+html.screenshot-selection-mode,
+html.screenshot-selection-mode *,
+html.screenshot-selection-mode *:hover {
+    cursor: crosshair !important;
+}
+
+/* Ensure the selection box itself doesn't interfere with cursor */
+html.screenshot-selection-mode .screenshot-selection-box {
+    cursor: crosshair !important;
+    pointer-events: none !important;
+}
+
+/* Additional fallback for body element */
+body.screenshot-selection-mode,
+body.screenshot-selection-mode * {
+    cursor: crosshair !important;
+}

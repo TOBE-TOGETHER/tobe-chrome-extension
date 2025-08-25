@@ -15,6 +15,14 @@ chrome.runtime.onInstalled.addListener((details) => {
             }
         });
     }
+    
+    // Create context menu for JSON formatting
+    chrome.contextMenus.create({
+        id: 'formatJson',
+        title: 'Format JSON',
+        contexts: ['selection'],
+        documentUrlPatterns: ['<all_urls>']
+    });
 });
 
 // Handle messages from popup, main page, and content scripts
@@ -183,6 +191,64 @@ async function handleUpdateSettings(settings, sendResponse) {
     } catch (error) {
         console.error('Update settings error:', error);
         sendResponse({ success: false, error: error.message });
+    }
+}
+
+// Handle context menu clicks
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+    if (info.menuItemId === 'formatJson') {
+        handleFormatJsonContextMenu(info, tab);
+    }
+});
+
+// Handle JSON formatting from context menu
+async function handleFormatJsonContextMenu(info, tab) {
+    try {
+        const selectedText = info.selectionText.trim();
+        
+        if (!selectedText) {
+            console.warn('No text selected for JSON formatting');
+            return;
+        }
+        
+        // Validate if the selected text looks like JSON
+        let isValidJson = false;
+        try {
+            JSON.parse(selectedText);
+            isValidJson = true;
+        } catch (e) {
+            // Not valid JSON, but we'll still try to format it
+            console.log('Selected text is not valid JSON, but will attempt to format');
+        }
+        
+        // Store the selected text for the JSON formatter page
+        await chrome.storage.local.set({
+            contextMenuJsonData: {
+                text: selectedText,
+                isValidJson: isValidJson,
+                timestamp: Date.now()
+            }
+        });
+        
+        // Reuse existing JSON formatter tab if present; otherwise create a new one
+        const formatterUrl = chrome.runtime.getURL('html/json-format.html');
+        const existingTabs = await chrome.tabs.query({ url: formatterUrl });
+        if (existingTabs && existingTabs.length > 0) {
+            const targetTab = existingTabs[0];
+            await chrome.tabs.update(targetTab.id, { active: true });
+            // Notify the page to reload data from storage
+            try {
+                await chrome.tabs.sendMessage(targetTab.id, { action: 'loadJsonFromStorage' });
+            } catch (err) {
+                // If messaging fails (e.g., page not ready), fallback to reloading the tab
+                await chrome.tabs.reload(targetTab.id);
+            }
+        } else {
+            await chrome.tabs.create({ url: formatterUrl });
+        }
+        
+    } catch (error) {
+        console.error('Error handling JSON format context menu:', error);
     }
 }
 

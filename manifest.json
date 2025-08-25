@@ -8,7 +8,8 @@
     "storage",
     "scripting",
     "tabs",
-    "downloads"
+    "downloads",
+    "contextMenus"
   ],
   "action": {
     "default_popup": "html/popup.html",
@@ -26,7 +27,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["js/content.js"],
+      "js": ["js/screenshot.js", "js/content.js"],
       "css": ["css/content.css"]
     }
   ],
