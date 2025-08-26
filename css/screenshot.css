@@ -1,5 +1,5 @@
-/* Content Script Styles */
-/* Note: @import may not work in content scripts, so defining styles directly */
+/* Screenshot Module Styles */
+/* Styles for screenshot selection and capture functionality */
 
 /* Screenshot selection mode styles */
 html.screenshot-selection-mode,

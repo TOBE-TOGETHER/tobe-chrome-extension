@@ -27,8 +27,8 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["js/screenshot.js", "js/content.js"],
-      "css": ["css/content.css"]
+      "js": ["js/screenshot.js"],
+      "css": ["css/screenshot.css"]
     }
   ],
   "icons": {

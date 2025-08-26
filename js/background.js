@@ -64,10 +64,45 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 // Handle visible tab capture
 async function handleCaptureVisibleTab(tab, sendResponse) {
     try {
-        const dataUrl = await chrome.tabs.captureVisibleTab(tab.windowId, {
-            format: 'png',
-            quality: 100
-        });
+        // Validate tab data
+        if (!tab || !tab.windowId) {
+            console.error('Invalid tab data for capture:', tab);
+            sendResponse({ success: false, error: 'Invalid tab data' });
+            return;
+        }
+        
+        // Capture the visible tab with retry logic
+        let dataUrl = null;
+        let retryCount = 0;
+        const maxRetries = 2;
+        
+        while (!dataUrl && retryCount < maxRetries) {
+            try {
+                dataUrl = await chrome.tabs.captureVisibleTab(tab.windowId, {
+                    format: 'png',
+                    quality: 100
+                });
+                
+                if (!dataUrl) {
+                    throw new Error('No data URL returned from capture');
+                }
+                
+            } catch (error) {
+                retryCount++;
+                console.warn(`Capture attempt ${retryCount}/${maxRetries} failed:`, error);
+                
+                if (retryCount < maxRetries) {
+                    // Wait before retry
+                    await new Promise(resolve => setTimeout(resolve, 200));
+                } else {
+                    throw error;
+                }
+            }
+        }
+        
+        if (!dataUrl) {
+            throw new Error('Failed to capture after all retries');
+        }
         
         // Store the screenshot data for popup to access
         chrome.storage.local.set({
@@ -79,6 +114,7 @@ async function handleCaptureVisibleTab(tab, sendResponse) {
         }, () => {
             sendResponse({ success: true, dataUrl });
         });
+        
     } catch (error) {
         console.error('Capture visible tab error:', error);
         sendResponse({ success: false, error: error.message });

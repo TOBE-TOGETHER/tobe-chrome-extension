@@ -60,13 +60,13 @@ tobe-chrome-extension/
 ├── js/                       # JavaScript files
 │   ├── background.js         # Service worker for background tasks
 │   ├── popup.js             # Popup logic and tab management
-│   ├── content.js           # Content script for page interaction
+│   ├── screenshot.js        # Screenshot functionality and content script
 │   └── json-format.js       # JSON formatter functionality
 ├── css/                      # Stylesheets
 │   ├── common.css           # Shared styles and theme variables
 │   ├── popup.css            # Popup-specific styles
 │   ├── json-format.css      # JSON formatter styles
-│   └── content.css          # Content script styles
+│   └── screenshot.css       # Screenshot functionality styles
 └── icons/                    # Extension icons
     ├── icon16.png           # 16x16 icon
     ├── icon48.png           # 48x48 icon

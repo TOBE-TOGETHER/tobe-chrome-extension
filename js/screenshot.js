@@ -750,7 +750,6 @@ const ScreenshotSelection = {
     // Enable full page capture mode
     async enableFullPageCapture() {
         try {
-            // Suppress in-page notifications during capture to avoid being recorded in screenshots
             // Get page dimensions
             const dpr = window.devicePixelRatio || 1;
             const viewportW = window.innerWidth;
@@ -769,8 +768,9 @@ const ScreenshotSelection = {
             const originalScrollTop = window.pageYOffset || document.documentElement.scrollTop;
             const originalScrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
             
-            // Calculate segments
-            const segments = Math.ceil(fullH / viewportH);
+            // Calculate segments with overlap to avoid gaps
+            const segmentHeight = Math.floor(viewportH * 0.9); // 90% of viewport height
+            const segments = Math.ceil(fullH / segmentHeight);
             
             // Create canvas for stitching
             const canvas = document.createElement('canvas');
@@ -780,66 +780,109 @@ const ScreenshotSelection = {
             canvas.width = fullW;
             canvas.height = fullH;
             
-            // Capture segments
+            // Capture segments with retry logic
             const capturedImages = [];
+            let hiddenElements = null;
             
             for (let i = 0; i < segments; i++) {
                 // Calculate scroll position for this segment
-                const scrollY = Math.min(i * viewportH, fullH - viewportH);
+                const scrollY = Math.min(i * segmentHeight, fullH - viewportH);
                 
                 // Scroll to position
                 window.scrollTo(0, scrollY);
                 
-                // Wait for page to settle
+                // Wait for page to settle with longer delay
+                await new Promise(resolve => {
+                    setTimeout(resolve, 300); // Increased from 100ms to 300ms
+                });
+                
+                // Additional wait for any dynamic content
                 await new Promise(resolve => {
                     requestAnimationFrame(() => {
-                        setTimeout(resolve, 100);
+                        setTimeout(resolve, 200);
                     });
                 });
                 
-                // Capture visible area
-                try {
-                    const dataUrl = await this.captureVisibleArea();
-                    capturedImages.push({
-                        dataUrl: dataUrl,
-                        scrollY: scrollY,
-                        index: i
-                    });
-                    // No progress notifications to avoid being captured
-                } catch (error) {
-                    console.error('Failed to capture segment:', error);
-                    this.showSelectionNotification(`Failed to capture segment ${i + 1}`, 'error');
-                    return;
+                // Hide fixed elements starting from the second segment (i > 0)
+                if (i === 1 && !hiddenElements) {
+                    // First time hiding elements (second segment)
+                    hiddenElements = this.hideFixedElements();
+                } else if (i === 0) {
+                    // First segment - keep all elements visible
+                    // Ensure any previously hidden elements are restored
+                    if (hiddenElements) {
+                        this.restoreFixedElements(hiddenElements);
+                        hiddenElements = null;
+                    }
+                }
+                
+                // Capture visible area with retry logic
+                let dataUrl = null;
+                let retryCount = 0;
+                const maxRetries = 3;
+                
+                while (!dataUrl && retryCount < maxRetries) {
+                    try {
+                        dataUrl = await this.captureVisibleArea();
+                        if (dataUrl) {
+                            capturedImages.push({
+                                dataUrl: dataUrl,
+                                scrollY: scrollY,
+                                index: i
+                            });
+                        }
+                    } catch (error) {
+                        retryCount++;
+                        console.warn(`Failed to capture segment ${i + 1}, attempt ${retryCount}/${maxRetries}:`, error);
+                        
+                        if (retryCount < maxRetries) {
+                            // Wait before retry
+                            await new Promise(resolve => setTimeout(resolve, 500));
+                        } else {
+                            console.error(`Failed to capture segment ${i + 1} after ${maxRetries} attempts`);
+                            this.showSelectionNotification(`Failed to capture segment ${i + 1} after ${maxRetries} attempts`, 'error');
+                            return;
+                        }
+                    }
                 }
             }
             
             // Restore original scroll position
             window.scrollTo(originalScrollLeft, originalScrollTop);
             
-            // Stitch images together (no notification to avoid capture)
-            for (const imgData of capturedImages) {
-                const img = new Image();
-                await new Promise((resolve, reject) => {
-                    img.onload = resolve;
-                    img.onerror = reject;
-                    img.src = imgData.dataUrl;
-                });
-                
-                // Draw image to canvas at correct position
-                ctx.drawImage(img, 0, imgData.scrollY);
+            // Restore hidden elements if any were hidden
+            if (hiddenElements) {
+                this.restoreFixedElements(hiddenElements);
             }
             
-            // Convert canvas to data URL
-            const fullPageDataUrl = canvas.toDataURL('image/png');
-            
-            // Show preview with download/copy options
-            this.showFullPagePreview(fullPageDataUrl, {
-                width: fullW,
-                height: fullH,
-                segments: segments
-            });
-            
-            // No final success toast to avoid being captured
+            // Stitch images together with error handling
+            try {
+                for (const imgData of capturedImages) {
+                    const img = new Image();
+                    await new Promise((resolve, reject) => {
+                        img.onload = resolve;
+                        img.onerror = reject;
+                        img.src = imgData.dataUrl;
+                    });
+                    
+                    // Draw image to canvas at correct position
+                    ctx.drawImage(img, 0, imgData.scrollY);
+                }
+                
+                // Convert canvas to data URL
+                const fullPageDataUrl = canvas.toDataURL('image/png');
+                
+                // Show preview with download/copy options
+                this.showFullPagePreview(fullPageDataUrl, {
+                    width: fullW,
+                    height: fullH,
+                    segments: segments
+                });
+                
+            } catch (stitchError) {
+                console.error('Failed to stitch images:', stitchError);
+                this.showSelectionNotification('Failed to create full page screenshot', 'error');
+            }
             
         } catch (error) {
             console.error('Full page capture error:', error);
@@ -850,20 +893,168 @@ const ScreenshotSelection = {
     // Capture visible area (helper for full page capture)
     async captureVisibleArea() {
         return new Promise((resolve, reject) => {
+            // Check if extension context is still valid
+            if (!this.isExtensionContextValid()) {
+                reject(new Error('Extension context invalid'));
+                return;
+            }
+            
             // Send message to background script to capture visible tab
             chrome.runtime.sendMessage({ action: 'captureVisibleTab' }, (response) => {
                 if (chrome.runtime.lastError) {
+                    console.error('Runtime error in captureVisibleArea:', chrome.runtime.lastError);
                     reject(new Error(chrome.runtime.lastError.message));
                     return;
                 }
                 
-                if (response && response.success) {
+                if (response && response.success && response.dataUrl) {
                     resolve(response.dataUrl);
                 } else {
-                    reject(new Error('Failed to capture visible area'));
+                    const errorMsg = response && response.error ? response.error : 'Failed to capture visible area';
+                    reject(new Error(errorMsg));
                 }
             });
         });
+    },
+
+    // Hide fixed elements to prevent duplication in full page screenshots
+    hideFixedElements() {
+        const hiddenElements = [];
+        
+        // Common selectors for fixed elements
+        const fixedSelectors = [
+            'header',
+            'nav',
+            '.header',
+            '.navbar',
+            '.navigation',
+            '.fixed-header',
+            '.sticky-header',
+            '.top-bar',
+            '.toolbar',
+            '.menu-bar',
+            '[style*="position: fixed"]',
+            '[style*="position:fixed"]',
+            '.fixed',
+            '.sticky',
+            '.floating',
+            '.overlay',
+            '.modal',
+            '.popup',
+            '.notification',
+            '.toast',
+            '.cookie-banner',
+            '.ad-banner',
+            '.social-share',
+            '.scroll-to-top',
+            '.back-to-top',
+            '.floating-button',
+            '.chat-widget',
+            '.support-widget',
+            '.live-chat',
+            '.feedback-button'
+        ];
+        
+        // Find and hide fixed elements
+        fixedSelectors.forEach(selector => {
+            try {
+                const elements = document.querySelectorAll(selector);
+                elements.forEach(element => {
+                    const computedStyle = window.getComputedStyle(element);
+                    const position = computedStyle.position;
+                    
+                    // Check if element is fixed, sticky, or has fixed positioning
+                    if (position === 'fixed' || position === 'sticky' || 
+                        element.style.position === 'fixed' || 
+                        element.style.position === 'sticky' ||
+                        element.classList.contains('fixed') ||
+                        element.classList.contains('sticky')) {
+                        
+                        // Store original visibility
+                        const originalDisplay = element.style.display;
+                        const originalVisibility = element.style.visibility;
+                        const originalOpacity = element.style.opacity;
+                        
+                        // Hide the element
+                        element.style.display = 'none';
+                        element.style.visibility = 'hidden';
+                        element.style.opacity = '0';
+                        
+                        // Store for restoration
+                        hiddenElements.push({
+                            element: element,
+                            originalDisplay: originalDisplay,
+                            originalVisibility: originalVisibility,
+                            originalOpacity: originalOpacity
+                        });
+                    }
+                });
+            } catch (error) {
+                console.warn('Error processing selector:', selector, error);
+            }
+        });
+        
+        // Also check for elements with inline fixed positioning
+        const allElements = document.querySelectorAll('*');
+        allElements.forEach(element => {
+            try {
+                const style = element.style;
+                if (style.position === 'fixed' || style.position === 'sticky') {
+                    // Check if we haven't already hidden this element
+                    const alreadyHidden = hiddenElements.some(hidden => hidden.element === element);
+                    
+                    if (!alreadyHidden) {
+                        const originalDisplay = style.display;
+                        const originalVisibility = style.visibility;
+                        const originalOpacity = style.opacity;
+                        
+                        style.display = 'none';
+                        style.visibility = 'hidden';
+                        style.opacity = '0';
+                        
+                        hiddenElements.push({
+                            element: element,
+                            originalDisplay: originalDisplay,
+                            originalVisibility: originalVisibility,
+                            originalOpacity: originalOpacity
+                        });
+                    }
+                }
+            } catch (error) {
+                // Ignore errors for individual elements
+            }
+        });
+        
+        console.log(`Hidden ${hiddenElements.length} fixed elements for full page capture`);
+        return hiddenElements;
+    },
+
+    // Restore hidden fixed elements
+    restoreFixedElements(hiddenElements) {
+        if (!hiddenElements || !Array.isArray(hiddenElements)) {
+            return;
+        }
+        
+        hiddenElements.forEach(item => {
+            try {
+                if (item.element && item.element.style) {
+                    // Restore original styles
+                    if (item.originalDisplay !== undefined) {
+                        item.element.style.display = item.originalDisplay;
+                    }
+                    if (item.originalVisibility !== undefined) {
+                        item.element.style.visibility = item.originalVisibility;
+                    }
+                    if (item.originalOpacity !== undefined) {
+                        item.element.style.opacity = item.originalOpacity;
+                    }
+                }
+            } catch (error) {
+                console.warn('Error restoring element:', error);
+            }
+        });
+        
+        console.log(`Restored ${hiddenElements.length} fixed elements`);
     },
 
     // Show full page preview
