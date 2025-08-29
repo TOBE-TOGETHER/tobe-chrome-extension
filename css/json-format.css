@@ -306,7 +306,6 @@ body {
 
 /* Indentation guides */
 .json-block {
-    margin-left: 20px;
     border-left: 1px dashed rgba(102, 126, 234, 0.35);
     padding-left: 12px;
 }
@@ -414,4 +413,191 @@ body {
 
 #toggleInputBtn.collapsed {
     transform: rotate(0deg);
+}
+
+/* New Line Number Layout */
+.json-line-container {
+    display: flex;
+    align-items: flex-start;
+    min-height: 1.6em;
+}
+
+.json-line-numbers {
+    width: 60px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding-right: 8px;
+    border-right: 1px solid var(--border-light);
+    background: var(--bg-secondary);
+    margin-right: 12px;
+}
+
+.json-line-number {
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-align: right;
+    min-width: 20px;
+    user-select: none;
+    padding: 2px 4px;
+    border-radius: 3px;
+    transition: background-color 0.2s ease;
+}
+
+.json-line-number:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.json-line-content {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Indentation levels - apply to content only */
+/* Base indentation styles */
+.json-line-container {
+    position: relative;
+}
+
+/* CSS Custom Properties for consistent values */
+:root {
+    --line-number-width: 60px;
+    --indent-step: 20px;
+    --guide-color: rgba(102, 126, 234, 0.2);
+    --guide-width: 1px;
+    --guide-spacing: 4px;
+}
+
+/* Optimized indentation styles using CSS custom properties */
+.json-indent-1 .json-line-content { 
+    padding-left: calc(var(--indent-step) * 1); 
+    border-left: var(--guide-width) dashed var(--guide-color); 
+    margin-left: var(--guide-spacing); 
+}
+.json-indent-2 .json-line-content { 
+    padding-left: calc(var(--indent-step) * 2); 
+    border-left: var(--guide-width) dashed var(--guide-color); 
+    margin-left: var(--guide-spacing); 
+}
+.json-indent-3 .json-line-content { 
+    padding-left: calc(var(--indent-step) * 3); 
+    border-left: var(--guide-width) dashed var(--guide-color); 
+    margin-left: var(--guide-spacing); 
+}
+.json-indent-4 .json-line-content { 
+    padding-left: calc(var(--indent-step) * 4); 
+    border-left: var(--guide-width) dashed var(--guide-color); 
+    margin-left: var(--guide-spacing); 
+}
+.json-indent-5 .json-line-content { 
+    padding-left: calc(var(--indent-step) * 5); 
+    border-left: var(--guide-width) dashed var(--guide-color); 
+    margin-left: var(--guide-spacing); 
+}
+.json-indent-6 .json-line-content { 
+    padding-left: calc(var(--indent-step) * 6); 
+    border-left: var(--guide-width) dashed var(--guide-color); 
+    margin-left: var(--guide-spacing); 
+}
+.json-indent-7 .json-line-content { 
+    padding-left: calc(var(--indent-step) * 7); 
+    border-left: var(--guide-width) dashed var(--guide-color); 
+    margin-left: var(--guide-spacing); 
+}
+.json-indent-8 .json-line-content { 
+    padding-left: calc(var(--indent-step) * 8); 
+    border-left: var(--guide-width) dashed var(--guide-color); 
+    margin-left: var(--guide-spacing); 
+}
+
+/* Vertical guide lines using CSS custom properties */
+.json-indent-1::before { 
+    content: ''; 
+    position: absolute; 
+    left: calc(var(--line-number-width) + (var(--indent-step) * 1)); 
+    top: 0; 
+    bottom: 0; 
+    width: var(--guide-width);
+    background-size: var(--guide-width) var(--guide-spacing); 
+    pointer-events: none; 
+}
+.json-indent-2::before { 
+    content: ''; 
+    position: absolute; 
+    left: calc(var(--line-number-width) + (var(--indent-step) * 2)); 
+    top: 0; 
+    bottom: 0; 
+    width: var(--guide-width); 
+    background: linear-gradient(to bottom, var(--guide-color) 0%, var(--guide-color) 50%, transparent 50%, transparent 100%); 
+    background-size: var(--guide-width) var(--guide-spacing); 
+    pointer-events: none; 
+}
+.json-indent-3::before { 
+    content: ''; 
+    position: absolute; 
+    left: calc(var(--line-number-width) + (var(--indent-step) * 3)); 
+    top: 0; 
+    bottom: 0; 
+    width: var(--guide-width); 
+    background: linear-gradient(to bottom, var(--guide-color) 0%, var(--guide-color) 50%, transparent 50%, transparent 100%); 
+    background-size: var(--guide-width) var(--guide-spacing); 
+    pointer-events: none; 
+}
+.json-indent-4::before { 
+    content: ''; 
+    position: absolute; 
+    left: calc(var(--line-number-width) + (var(--indent-step) * 4)); 
+    top: 0; 
+    bottom: 0; 
+    width: var(--guide-width); 
+    background: linear-gradient(to bottom, var(--guide-color) 0%, var(--guide-color) 50%, transparent 50%, transparent 100%); 
+    background-size: var(--guide-width) var(--guide-spacing); 
+    pointer-events: none; 
+}
+.json-indent-5::before { 
+    content: ''; 
+    position: absolute; 
+    left: calc(var(--line-number-width) + (var(--indent-step) * 5)); 
+    top: 0; 
+    bottom: 0; 
+    width: var(--guide-width); 
+    background: linear-gradient(to bottom, var(--guide-color) 0%, var(--guide-color) 50%, transparent 50%, transparent 100%); 
+    background-size: var(--guide-width) var(--guide-spacing); 
+    pointer-events: none; 
+}
+.json-indent-6::before { 
+    content: ''; 
+    position: absolute; 
+    left: calc(var(--line-number-width) + (var(--indent-step) * 6)); 
+    top: 0; 
+    bottom: 0; 
+    width: var(--guide-width); 
+    background: linear-gradient(to bottom, var(--guide-color) 0%, var(--guide-color) 50%, transparent 50%, transparent 100%); 
+    background-size: var(--guide-width) var(--guide-spacing); 
+    pointer-events: none; 
+}
+.json-indent-7::before { 
+    content: ''; 
+    position: absolute; 
+    left: calc(var(--line-number-width) + (var(--indent-step) * 7)); 
+    top: 0; 
+    bottom: 0; 
+    width: var(--guide-width); 
+    background: linear-gradient(to bottom, var(--guide-color) 0%, var(--guide-color) 50%, transparent 50%, transparent 100%); 
+    background-size: var(--guide-width) var(--guide-spacing); 
+    pointer-events: none; 
+}
+.json-indent-8::before { 
+    content: ''; 
+    position: absolute; 
+    left: calc(var(--line-number-width) + (var(--indent-step) * 8)); 
+    top: 0; 
+    bottom: 0; 
+    width: var(--guide-width); 
+    background: linear-gradient(to bottom, var(--guide-color) 0%, var(--guide-color) 50%, transparent 50%, transparent 100%); 
+    background-size: var(--guide-width) var(--guide-spacing); 
+    pointer-events: none; 
 }
